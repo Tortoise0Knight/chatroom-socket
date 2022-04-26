@@ -13,25 +13,28 @@
 
 int main(void)
 {
-	struct sockaddr_in servaddr, cliaddr;
+/* Declare variables */
+	struct sockaddr_in servaddr, cliaddr; 
 	socklen_t cliaddr_len;
 	int listenfd, connfd;
 	char buf[MAXLINE];
 	char str[INET_ADDRSTRLEN];
 	int i, n;
 
-	listenfd = socket(AF_INET, SOCK_STREAM, 0);
-
+/* Initialize the listenfd */
+	listenfd = socket(AF_INET, SOCK_STREAM, 0); 
+/* Initialize the server address */
 	bzero(&servaddr, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	servaddr.sin_port = htons(SERV_PORT);
-    
+/* Bind the server address to the listenfd and start listenning*/    
 	bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
 
 	listen(listenfd, 20);
 
 	printf("Accepting connections ...\n");
+/* Infinite loop waiting for client connection */	
 	while (1) {
 		cliaddr_len = sizeof(cliaddr);
 		connfd = accept(listenfd, 
@@ -42,7 +45,7 @@ int main(void)
 		printf("received from %s at PORT %d: %s\n",
 		       inet_ntop(AF_INET, &cliaddr.sin_addr, str, sizeof(str)),
 		       ntohs(cliaddr.sin_port), buf);
-    
+/* Convert received string to upper case */     
 		for (i = 0; i < n; i++)
 			buf[i] = toupper(buf[i]);
 		write(connfd, buf, n);
