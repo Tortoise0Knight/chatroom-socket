@@ -8,6 +8,8 @@
 
 #define MAXLINE 80
 #define SERV_PORT 8000
+#define LOCALHOST 127.0.0.1
+#define REMOTE_SERVER 101.34.86.33
 
 int main(int argc, char *argv[])
 {
@@ -19,7 +21,7 @@ int main(int argc, char *argv[])
 
 	bzero(&servaddr, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
-	inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
+	inet_pton(AF_INET, "REMOTE_SERVER", &servaddr.sin_addr);
 	servaddr.sin_port = htons(SERV_PORT);
     
 	connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
