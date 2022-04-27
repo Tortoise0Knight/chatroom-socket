@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 /* Info that connection established, useful when debugging */
 	connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
 
-	printf("Connection established with REMOTE_SERVER");
+	printf("Connection established with REMOTE_SERVER\n");
 	while (fgets(buf, MAXLINE, stdin) != NULL) {
 		write(sockfd, buf, strlen(buf));
 		n = read(sockfd, buf, MAXLINE);

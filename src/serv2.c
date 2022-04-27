@@ -34,6 +34,8 @@ int main(void)
 		cliaddr_len = sizeof(cliaddr);
 		connfd = accept(listenfd, 
 				(struct sockaddr *)&cliaddr, &cliaddr_len);
+		printf("Connection established with %s.\n", 
+				inet_ntop(AF_INET, &cliaddr.sin_addr, str, sizeof(str)));
 		while (1) {
 			n = read(connfd, buf, MAXLINE);
 			if (n == 0) {
