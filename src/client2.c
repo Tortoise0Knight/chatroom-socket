@@ -15,18 +15,27 @@ int main(int argc, char *argv[])
 {
 	struct sockaddr_in servaddr;
 	char buf[MAXLINE];
+	char servaddrstr[INET_ADDRSTRLEN];
 	int sockfd, n;
     
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
 	bzero(&servaddr, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
-	inet_pton(AF_INET, "REMOTE_SERVER", &servaddr.sin_addr);
+	inet_pton(AF_INET, "101.34.86.33", &servaddr.sin_addr);
 	servaddr.sin_port = htons(SERV_PORT);
+/* Info that connection is being established */
+	printf("Establishing connection with %s\n", 
 /* Info that connection established, useful when debugging */
-	connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
-
-	printf("Connection established with REMOTE_SERVER\n");
+	inet_ntop(AF_INET, &servaddr.sin_addr, servaddrstr, sizeof(servaddrstr)));
+	if (connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0)
+	{
+		printf("Connection failed, exitting...\n");
+		return -1;
+	}
+	else
+		printf("Connection established with %s\n", 
+	inet_ntop(AF_INET, &servaddr.sin_addr, servaddrstr, sizeof(servaddrstr)));
 	while (fgets(buf, MAXLINE, stdin) != NULL) {
 		write(sockfd, buf, strlen(buf));
 		n = read(sockfd, buf, MAXLINE);
