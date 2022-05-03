@@ -12,27 +12,36 @@
 #define SERV_PORT 8000
 
 //regist a new client, input the pointer of clinet list, pointer of clinet name lenth and the pointer of clinet number
-int regist(char **list, int *lenth, int *n, char *newname){
+int regist(char** list, int* lenth, int* n, char* newname) {
 	int newlenth = 0, signal = 1;
+	char* newname1;
 	//save the lenth of new client name into "newname"
-	for(int newlenth = 0; newname[newlenth] != '\0'; newlenth++);
+	while (newname[newlenth] != '\0')
+		newlenth++;
+	newname1 = (char*)malloc((newlenth + 1) * sizeof(char));
+	//copy the string in newname to newname1
+	for (int i = 0; i <= newlenth; i++) 
+	{
+		newname1[i] = newname[i];
+	}
 	//compare newname with the name in list
-	for(int i = 0; i < *n; i++){
+	for (int i = 0; i < *n; i++) {
 		int sign = 0;
-		if(lenth[i] == newlenth)sign = 1;
-		for(int j = 0; j < lenth[i] && sign; j++){
-			if(list[i][j] != newname[j])
+		if (lenth[i] == newlenth)sign = 1;
+		for (int j = 0; j < lenth[i] && sign; j++) {
+			if (list[i][j] != newname1[j])
 			{
 				sign = 0;
 			}
 		}
-		if(sign)signal = 0;
+		if (sign)signal = 0;
 	}
-	if(signal)
+	//if there is no same name, add the newname into the list
+	if (signal)
 	{
-		list[*n] = newname;
+		list[*n] = newname1;
 		lenth[*n] = newlenth;
-		*n++;
+		(*n)++;
 	}
 	return signal;
 }
