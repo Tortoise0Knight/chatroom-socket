@@ -11,6 +11,30 @@
 #define MAXCLIENTS 100
 #define SERV_PORT 8000
 
+//regist a new client, input the pointer of clinet list, pointer of clinet name lenth and the pointer of clinet number
+int regist(char **list,int *lenth; int *n; char *newname){
+	int newlenth=0, signal=1;
+	//save the lenth of new client name into "newname"
+	for(int newlenth=0; newname[newlenth]!='\0'; newlenth++);
+	//compare newname with the name in list
+	for(int i=0; i<*n; i++){
+		int sign=0;
+		if(lenth[i]==newlenth)sign=1;
+		for(int j=0; j<lenth[i]&&sign; j++){
+			if(char[i][j]=!=newname[j]){
+				sign=0;
+			}
+		}
+		if(sign)signal=0;
+	}
+	if(signal){
+		list[*n]=newname;
+		lenth[*n]=newlenth;
+		*n++;
+	}
+	return signal;
+}
+
 int main(void)
 {
 	struct sockaddr_in servaddr, cliaddr;
