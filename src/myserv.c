@@ -67,7 +67,7 @@ int main(void)
 			close(connfd);
 			exit(0);
 		}
-/* Parent proccess to prepare for another connection */
+/* Parent proccess to prepare for another connection. */
 		else
 		{
 			close(connfd);
