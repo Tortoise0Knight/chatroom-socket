@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 
 	bzero(&servaddr, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
-	inet_pton(AF_INET, "101.34.86.33", &servaddr.sin_addr);
+	inet_pton(AF_INET, "LOCALHOST", &servaddr.sin_addr);
 	servaddr.sin_port = htons(SERV_PORT);
 /* Info that connection is being established */
 	printf("Establishing connection with %s\n", 
