@@ -12,11 +12,8 @@
 #define SERV_PORT 8000
 
 //regist a new client, input the pointer of clinet list, pointer of clinet name lenth and the pointer of clinet number
-int regist(char **list,int *lenth; int *n){
-	char newname[50];
+int regist(char **list,int *lenth; int *n; char *newname){
 	int newlenth=0, signal=1;
-	//receive new client name from keyboard
-	gets(newname);
 	//save the lenth of new client name into "newname"
 	for(int newlenth=0; newname[newlenth]!='\0'; newlenth++);
 	//compare newname with the name in list
