@@ -36,7 +36,8 @@ int main(int argc, char *argv[])
 	else
 		printf("Connection established with %s\n", 
 	inet_ntop(AF_INET, &servaddr.sin_addr, servaddrstr, sizeof(servaddrstr)));
-	while (fgets(buf, MAXLINE, stdin) != NULL) {
+	while (scanf("%s", buf) != NULL) {
+		printf("%s",buf);
 		write(sockfd, buf, strlen(buf));
 		n = read(sockfd, buf, MAXLINE);
 		if (n == 0)

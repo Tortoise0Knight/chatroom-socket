@@ -5,6 +5,9 @@
 int 
 main()
 {
+	int num = 0;
+	int *p =&num;
+
 	pid_t		pid;
 	pid = fork();
 
@@ -13,9 +16,16 @@ main()
         printf("Hello, World!\n");
 
 		if (pid == 0)
-			printf("Child process!\n");
+		{
+			printf("Child process! The number is %d\n", *p);
+			sleep(3);
+		}
 		else
-			printf("Parent process!\n");
+		{
+			printf("Parent process! The number is %d\n", *p);
+			sleep(3);
+			(*p)++;
+		}
 	}
 	return 0;
 }
