@@ -36,6 +36,7 @@ pid_t pid;
 /* send a message to all logged clients */
 void SendMsgToAll(char* msg, int id){
     int i;
+/* add "[username]" as prefix of the message. */
 	char msgbuf[MAXLINE + MAX_NAME_LENGTH + 2] = "[";
 	printf("0st %s\n",msgbuf);
 	strcat(msgbuf, usrnm_list[id]);
@@ -49,6 +50,8 @@ void SendMsgToAll(char* msg, int id){
     }
 }
 
+
+/* This function is now deprecated 
 //regist a new client, input the pointer of clinet list, pointer of clinet name lenth and the pointer of clinet number
 int regist(char **list,int *lenth, int *n, char *newname){
 	int newlenth=0, signal=1;
@@ -73,6 +76,7 @@ int regist(char **list,int *lenth, int *n, char *newname){
 	}
 	return signal;
 }
+*/
 
 int usrlogin (int id)
 /* editted form Wang Yitong and Zeng Junkai's contributions */
