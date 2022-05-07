@@ -11,6 +11,41 @@
 #define MAXCLIENTS 100
 #define SERV_PORT 8000
 
+int writeoff(char** list, int* lenth, int* n, char* delname)
+{
+	int dellenth = 0, signal = 0, num = -1;
+	//save the lenth of delete client name into "delname"
+	while (delname[dellenth] != '\0')
+		dellenth++;
+	//find the target name
+	for (int i = 0; i < *n && !signal; i++)
+	{
+		if (lenth[i] == dellenth)
+		{
+			int sign = 1;
+			for (int j = 0; j < lenth[i] && sign; j++)
+			{
+				if (list[i][j] != delname[j])
+					sign = 0;
+			}
+			if (sign)
+			{
+				signal = 1;
+				num = i;
+			}
+		}
+	}
+	//free the pointer and relist the list
+	free(list[num]);
+	(* n)--;
+	for (int i = num; i < *n; i++) {
+		list[i] = list[i + 1];
+		lenth[i] = lenth[i + 1];
+	}
+	return signal;
+}
+
+
 //regist a new client, input the pointer of clinet list, pointer of clinet name lenth and the pointer of clinet number
 int regist(char** list, int* lenth, int* n, char* newname) {
 	int newlenth = 0, signal = 1;
