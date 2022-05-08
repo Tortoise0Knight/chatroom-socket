@@ -11,6 +11,16 @@
 #define MAXCLIENTS 100
 #define SERV_PORT 8000
 
+int ifexit(char* x)
+{
+	char out[50] = "exit";
+	int t = 1;
+	for (int i = 0; x[i] != '\0' && t && i < 5; i++) {
+		if (x[i] != out[i])t = 0;
+	}
+	return t;
+}
+
 int writeoff(char** list, int* lenth, int* n, char* delname)
 {
 	int dellenth = 0, signal = 0, num = -1;
