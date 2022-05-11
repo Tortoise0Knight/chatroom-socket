@@ -13,14 +13,22 @@
 #define LOCALHOST 127.0.0.1
 #define REMOTE_SERVER 101.34.86.33
 
+//get the message from client and send it to the server
 void* checkmsg(void* sfd){
 	char buf[MAXLINE];
 	int sockfd = *(int*)sfd;
 	int n;
-	while (1) {
+	while (sfd != 0) {
 		/*printf("%s",buf);*/
-		scanf("%s", buf);
-		send(sockfd, buf, strlen(buf),0);
+		gets(buf);
+		if(strcmp(buf,"exit!") == 0)
+		{
+			close(sockfd);
+			sfd = 0;
+		}
+		else{
+			send(sockfd, buf, strlen(buf),0);
+		}
 		/*n = read(sockfd, buf, MAXLINE);
 		if (n == 0)
 			printf("the other side has been closed.\n");
@@ -74,15 +82,16 @@ int main(int argc, char *argv[])
 	}*/
 	pthread_t tid;
     pthread_create(&tid,0,checkmsg,&sockfd);
-	while(1){
+	while(sockfd != 0){
 		cleanout(buf);
 		if (recv(sockfd,buf,sizeof(buf),0) <= 0){
 			printf("there's some thing wrong\n");
+			close(sockfd);
+			sockfd = 0;
 		}
 		else{
 			printf("%s\n",buf);
 		}
-
 		/*n = read(sockfd, buf, MAXLINE);
 		if (n == 0)
 			printf("the other side has been closed.\n");
@@ -90,6 +99,5 @@ int main(int argc, char *argv[])
 			write(STDOUT_FILENO, buf, n);
 			printf("%s\n", buf);*/
 	}
-	close(sockfd);
 	return 0;
 }
