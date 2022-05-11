@@ -38,10 +38,10 @@ void SendMsgToAll(char* msg, int id){
     int i;
 /* add "[username]" as prefix of the message. */
 	char msgbuf[MAXLINE + MAX_NAME_LENGTH + 2] = "[";
-	printf("0st %s\n",msgbuf);
 	strcat(msgbuf, usrnm_list[id]);
 	strcat(msgbuf, "]");
 	strcat(msgbuf, msg);
+	printf("0st %s\n",msgbuf);
     for (i = 0;i < MAXCLIENTS;i++){
         if (strlen(usrnm_list[i]) != 0){
             printf("sendto%d\n",client_fd_list[i]);
@@ -111,7 +111,7 @@ int usrlogin (int id)
 		else
 		{
 			strcpy(usrnm_list[id], namebuf);
-			printf("username is %s", namebuf);
+			printf("username is %s\n", namebuf);
 			return(SUCCESS_LOGIN);
 		}
 	}

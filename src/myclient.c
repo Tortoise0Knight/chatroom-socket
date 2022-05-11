@@ -1,22 +1,37 @@
 /* client.c */
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <pthread.h>
 
 #define MAXLINE 80
 #define SERV_PORT 8000
 #define LOCALHOST 127.0.0.1
 #define REMOTE_SERVER 101.34.86.33
 
+void* checkmsg(void* sfd){
+	char buf[MAXLINE];
+	int sockfd = *(int*)sfd;
+	int n;
+	while(1){
+		n = read(sockfd, buf, MAXLINE);
+		if (n == 0)
+			printf("the other side has been closed.\n");
+		else
+			write(STDOUT_FILENO, buf, n);
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	struct sockaddr_in servaddr;
 	char buf[MAXLINE];
 	char servaddrstr[INET_ADDRSTRLEN];
-	int sockfd, n;
+	int sockfd, n, a;
     
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -36,14 +51,25 @@ int main(int argc, char *argv[])
 	else
 		printf("Connection established with %s\n", 
 	inet_ntop(AF_INET, &servaddr.sin_addr, servaddrstr, sizeof(servaddrstr)));
-	while (scanf("%s", buf) != NULL) {
-		printf("%s",buf);
+	/*while(1)
+	{
+		if(scanf("%s",buf)!=NULL)
+		{
+			write(sockfd, buf, strlen(buf));
+		}
+		if()
+	}*/
+	pthread_t tid;
+    pthread_create(&tid,0,checkmsg,&sockfd);
+	while (1) {
+		/*printf("%s",buf);*/
+		scanf("%s", buf);
 		write(sockfd, buf, strlen(buf));
-		n = read(sockfd, buf, MAXLINE);
+		/*n = read(sockfd, buf, MAXLINE);
 		if (n == 0)
 			printf("the other side has been closed.\n");
 		else
-			write(STDOUT_FILENO, buf, n);
+			write(STDOUT_FILENO, buf, n);*/
 	}
 
 	close(sockfd);
