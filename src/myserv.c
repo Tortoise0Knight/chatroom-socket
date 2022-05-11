@@ -38,18 +38,32 @@ void SendMsgToAll(char* msg, int id){
     int i;
 /* add "[username]" as prefix of the message. */
 	char msgbuf[MAXLINE + MAX_NAME_LENGTH + 2] = "[";
-	printf("0st %s\n",msgbuf);
 	strcat(msgbuf, usrnm_list[id]);
 	strcat(msgbuf, "]");
 	strcat(msgbuf, msg);
+	printf("0st %s\n",msgbuf);
     for (i = 0;i < MAXCLIENTS;i++){
         if (strlen(usrnm_list[i]) != 0){
             printf("sendto%d\n",client_fd_list[i]);
-            send(client_fd_list[i],msgbuf,strlen(msg),0);
+            send(client_fd_list[i],msgbuf,strlen(msgbuf),0);
         }
     }
 }
 
+/* server send a message to all logged clients */
+void serverSendMsgToAll(char* msg){
+    int i;
+/* add "[username]" as prefix of the message. */
+	char msgbuf[MAXLINE + MAX_NAME_LENGTH + 2] = "[server]";
+	strcat(msgbuf, msg);
+	printf("0st %s\n",msgbuf);
+    for (i = 0;i < MAXCLIENTS;i++){
+        if (strlen(usrnm_list[i]) != 0){
+            printf("sendto%d\n",client_fd_list[i]);
+            send(client_fd_list[i],msgbuf,strlen(msgbuf),0);
+        }
+    }
+}
 
 /* This function is now deprecated 
 //regist a new client, input the pointer of clinet list, pointer of clinet name lenth and the pointer of clinet number
@@ -111,7 +125,7 @@ int usrlogin (int id)
 		else
 		{
 			strcpy(usrnm_list[id], namebuf);
-			printf("username is %s", namebuf);
+			printf("username is %s\n", namebuf);
 			return(SUCCESS_LOGIN);
 		}
 	}
@@ -185,8 +199,8 @@ void* service_thread(void* p){
         if (recv(fd,buf,sizeof(buf),0) <= 0)
 		{
 			strcpy(buf, usrnm_list[id]);
-			strcat(buf, "has left the chatroom");
-			SendMsgToAll(buf, id);
+			strcat(buf, " has left the chatroom");
+			serverSendMsgToAll(buf);
 			client_fd_list[id] = 0;
 			for (int i = 0; i < MAX_NAME_LENGTH; i++)
 				usrnm_list[id][i] = 0;
