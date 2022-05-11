@@ -21,7 +21,6 @@ void* checkmsg(void* sfd){
 		/*printf("%s",buf);*/
 		scanf("%s", buf);
 		send(sockfd, buf, strlen(buf),0);
-		printf("send the buf: %s\n",buf);
 		/*n = read(sockfd, buf, MAXLINE);
 		if (n == 0)
 			printf("the other side has been closed.\n");
