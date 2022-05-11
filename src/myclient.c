@@ -17,12 +17,26 @@ void* checkmsg(void* sfd){
 	char buf[MAXLINE];
 	int sockfd = *(int*)sfd;
 	int n;
-	while(1){
-		n = read(sockfd, buf, MAXLINE);
+	while (1) {
+		/*printf("%s",buf);*/
+		scanf("%s", buf);
+		send(sockfd, buf, strlen(buf),0);
+		printf("send the buf: %s\n",buf);
+		/*n = read(sockfd, buf, MAXLINE);
 		if (n == 0)
 			printf("the other side has been closed.\n");
 		else
-			write(STDOUT_FILENO, buf, n);
+			write(STDOUT_FILENO, buf, n);*/
+	}
+}
+
+//clean the buf
+void cleanout(char* buf)
+{
+	int n = strlen(buf);
+	for(int i = 0; i < n; i++)
+	{
+		buf[i] = 0;
 	}
 }
 
@@ -61,17 +75,22 @@ int main(int argc, char *argv[])
 	}*/
 	pthread_t tid;
     pthread_create(&tid,0,checkmsg,&sockfd);
-	while (1) {
-		/*printf("%s",buf);*/
-		scanf("%s", buf);
-		write(sockfd, buf, strlen(buf));
+	while(1){
+		cleanout(buf);
+		if (recv(sockfd,buf,sizeof(buf),0) <= 0){
+			printf("there's some thing wrong\n");
+		}
+		else{
+			printf("%s\n",buf);
+		}
+
 		/*n = read(sockfd, buf, MAXLINE);
 		if (n == 0)
 			printf("the other side has been closed.\n");
 		else
-			write(STDOUT_FILENO, buf, n);*/
+			write(STDOUT_FILENO, buf, n);
+			printf("%s\n", buf);*/
 	}
-
 	close(sockfd);
 	return 0;
 }

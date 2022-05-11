@@ -45,7 +45,7 @@ void SendMsgToAll(char* msg, int id){
     for (i = 0;i < MAXCLIENTS;i++){
         if (strlen(usrnm_list[i]) != 0){
             printf("sendto%d\n",client_fd_list[i]);
-            send(client_fd_list[i],msgbuf,strlen(msg),0);
+            send(client_fd_list[i],msgbuf,strlen(msgbuf),0);
         }
     }
 }
