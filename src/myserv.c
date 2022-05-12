@@ -148,15 +148,30 @@ int usrlogin (int id)
 void init()
 {
 	listenfd = socket(AF_INET, SOCK_STREAM, 0);
-
+	if (listenfd == -1) {
+        printf("socket creation failed...\n");
+        exit(0);
+    }
+    else
+        printf("Socket successfully created..\n");
 	bzero(&servaddr, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	servaddr.sin_port = htons(SERV_PORT);
     
-	bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
+	if ((bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr))) != 0) {
+        printf("socket bind failed...\n");
+        exit(0);
+    }
+    else
+        printf("Socket successfully binded..\n");
 
-	listen(listenfd, 20);
+	 if ((listen(listenfd, 20)) != 0) {
+        printf("Listen failed...\n");
+        exit(0);
+    }
+    else
+        printf("Server listening..\n");
 
 	printf("Server started. Accepting connections...\n");
 }

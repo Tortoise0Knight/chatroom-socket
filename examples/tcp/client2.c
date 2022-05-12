@@ -25,6 +25,13 @@ int main(int argc, char *argv[])
 	servaddr.sin_port = htons(SERV_PORT);
     
 	connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
+	if (connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0)
+	{
+		printf("Connection failed, exitting...\n");
+		return -1;
+	}
+	else
+		printf("Connection established.\n");
 
 	while (fgets(buf, MAXLINE, stdin) != NULL) {
 		write(sockfd, buf, strlen(buf));
