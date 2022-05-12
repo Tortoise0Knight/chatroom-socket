@@ -13,29 +13,46 @@
 #define LOCALHOST 127.0.0.1
 #define REMOTE_SERVER 101.34.86.33
 
-//get the message from client and send it to the server
-void* checkmsg(void* sfd){
-	char buf[MAXLINE];
-	int sockfd = *(int*)sfd;
-	int n;
-	while (sfd != 0) {
-		/*printf("%s",buf);*/
-		gets(buf);
-		if(strcmp(buf,"exit!") == 0)
-		{
-			close(sockfd);
-			sfd = 0;
-		}
-		else{
-			send(sockfd, buf, strlen(buf),0);
-		}
-		/*n = read(sockfd, buf, MAXLINE);
-		if (n == 0)
-			printf("the other side has been closed.\n");
-		else
-			write(STDOUT_FILENO, buf, n);*/
-	}
+void cleanout(char* buf);
+
+char sendbuf[MAXLINE];
+char readbuf[MAXLINE];
+struct sockaddr_in servaddr;
+char servaddrstr[INET_ADDRSTRLEN];
+int sockfd, n, a;
+
+int is_exit()
+{
+	fgets(sendbuf, MAXLINE, stdin);
+	sendbuf[strcspn(sendbuf, "\n")] = 0;
+	if(strcmp(sendbuf,"exit!") == 0)
+		return 1;
+	else
+		return 0;
 }
+
+void* sendmesg(void* p)
+{
+	int sockfd = *(int*)p;
+	while(1)
+	{
+		if (is_exit())
+		{
+			send(sockfd, sendbuf, strlen(sendbuf),0);
+			close(sockfd);
+			*(int*)p = 0;
+			pthread_exit((void*)p);
+		}
+		else
+		{
+			send(sockfd, sendbuf, strlen(sendbuf),0);
+			cleanout(sendbuf);
+		}
+	}
+	
+}
+
+
 
 //clean the buf
 void cleanout(char* buf)
@@ -48,12 +65,7 @@ void cleanout(char* buf)
 }
 
 int main(int argc, char *argv[])
-{
-	struct sockaddr_in servaddr;
-	char buf[MAXLINE];
-	char servaddrstr[INET_ADDRSTRLEN];
-	int sockfd, n, a;
-    
+{   
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
 	bzero(&servaddr, sizeof(servaddr));
@@ -72,32 +84,19 @@ int main(int argc, char *argv[])
 	else
 		printf("Connection established with %s\n", 
 	inet_ntop(AF_INET, &servaddr.sin_addr, servaddrstr, sizeof(servaddrstr)));
-	/*while(1)
-	{
-		if(scanf("%s",buf)!=NULL)
-		{
-			write(sockfd, buf, strlen(buf));
-		}
-		if()
-	}*/
 	pthread_t tid;
-    pthread_create(&tid,0,checkmsg,&sockfd);
-	while(sockfd != 0){
-		cleanout(buf);
-		if (recv(sockfd,buf,sizeof(buf),0) <= 0){
-			printf("there's some thing wrong\n");
+    pthread_create(&tid,0,sendmesg,&sockfd);
+	while(sockfd != 0)
+	{
+		cleanout(readbuf);
+		if (recv(sockfd,readbuf,sizeof(readbuf),0) <= 0)
+		{
+			printf("There's something wrong with connection.\n");
 			close(sockfd);
 			sockfd = 0;
 		}
-		else{
-			printf("%s\n",buf);
-		}
-		/*n = read(sockfd, buf, MAXLINE);
-		if (n == 0)
-			printf("the other side has been closed.\n");
 		else
-			write(STDOUT_FILENO, buf, n);
-			printf("%s\n", buf);*/
+			printf("%s\n",readbuf);
 	}
 	return 0;
 }

@@ -33,6 +33,14 @@ char usrnm_list[MAXCLIENTS][MAX_NAME_LENGTH]={0}; //initialize the username list
 int n; //n stores number of bytes read.
 pid_t pid; 
 
+int is_exit(char* buf)
+{
+	if(strcmp(buf,"exit!") == 0)
+		return 1;
+	else
+		return 0;
+}
+
 /* send a message to all logged clients */
 void SendMsgToAll(char* msg, int id){
     int i;
@@ -196,7 +204,7 @@ void* service_thread(void* p){
 /* When the client is naturally closed,
    send a message to other clients and delete its file descriptor,
 */
-        if (recv(fd,buf,sizeof(buf),0) <= 0)
+        if (recv(fd,buf,sizeof(buf),0) <= 0 || is_exit(buf))
 		{
 			strcpy(buf, usrnm_list[id]);
 			strcat(buf, " has left the chatroom");
@@ -204,13 +212,15 @@ void* service_thread(void* p){
 			client_fd_list[id] = 0;
 			for (int i = 0; i < MAX_NAME_LENGTH; i++)
 				usrnm_list[id][i] = 0;
-			break;
 			printf("登录后退出：fd = %dquit\n",fd);
 			pthread_exit((void*)id);
         }
         //把服务器接受到的信息发给所有的客户端
         else
+		{
+			printf("Received messsage\n");
 			SendMsgToAll(buf, id);
+		}
     }
 }
 
